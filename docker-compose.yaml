@@ -1,0 +1,23 @@
+version: '3.2'
+
+services:
+  # RabbitMQ
+  rabbit:
+    hostname: rabbit
+    image: rabbitmq:3.6.1-management
+    ports:
+      - 5672:5672
+      - 15672:15672
+    command: sh -c "rabbitmq-plugins enable rabbitmq_management; rabbitmq-server"
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
+
+  # App
+  worker:
+    build: ./worker
+    hostname: worker
+    depends_on:
+      - rabbit
+    environment:
+      - HOST=rabbit
